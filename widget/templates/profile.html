@@ -1,0 +1,191 @@
+<div class="padding-zero" style="height:100%;">
+	<div class="social-plugin social-thread" style="height: 100%;">
+		<div class="wallMembers" style="margin-top: 0px !important">
+			<td-cards>
+				<td-card ng-repeat="user in Profile.users" on-swipe-left="cardSwipedLeft($index)"
+					on-swipe-right="cardSwipedRight($index)"
+					on-partial-swipe="cardPartialSwipe(amt)" class="card-{{$index}}">
+
+					<div class="profile-container" ng-class="{'busy' : busy}">
+						<div class="profile-backdrop"></div>
+						<div class="profile-holder">
+							<div class="profile-click-catcher" style="background: white" ng-click="close()"></div>
+							<div class="profile-overlay backgroundColorTheme"
+								ng-click="hideDropdown()">
+								<div class="profile-header">
+									<div class="avatar-container">
+										<div class="avatar backgroundColorTheme">
+
+											<img alt="profile picture"
+												ng-if="user.userId && user._userProfiles.imageUrl"
+												ng-src="{{user._userProfiles.imageUrl || user.imageUrl}}"
+												width="100px" />
+
+											<img alt="profile picture"
+												ng-if="!(user.userId && user._userProfiles.imageUrl)"
+												ng-src="../../../styles/media/avatar-placeholder.png"
+												ng-if="!uploadProfileImage" />
+										</div>
+
+										<button class="btn btn-icon btn-info" ng-if="editingProfile"
+											ng-disabled="busy"><span
+												class="icon icon-camera2"></span></button>
+									</div>
+
+									<button class="btn btn-icon close-btn"
+										ng-click="Profile.showMembers()">
+										<img src="../widget/assets/img/times-solid.svg"
+											style="height: 50%;">
+									</button>
+
+									<button class="btn btn-icon expand-btn"
+										ng-click="Profile.openBottomDrawer(user)">
+										<img src="../widget/assets/img/ellipsis-v-solid.svg"
+											style="height: 50%;">
+									</button>
+									<div class="cover-img">
+
+										<img alt="background picture"
+											ng-if="user._userProfiles.backgroundImage"
+											ng-src="{{ user._userProfiles.backgroundImage || userProfile.backgroundImage }}"
+											ng-show="!uploadBackgroundImage" />
+
+										<img alt="background picture"
+											ng-if="!(user._userProfiles.backgroundImage)"
+											ng-src="../../../styles/media/avatar-placeholder.png"
+											ng-if="!uploadProfileImage" />
+									</div>
+
+									<div class="user-info ellipsis">
+										<h4 class="name ellipsis">
+											{{ user.userDetails.displayName || user.displayName || user.userDetails.firstName || user.firstName || user.userDetails.lastName || user.lastName ?
+											  (user.userDetails.displayName ? user.userDetails.displayName : user.userDetails.firstName + ' ' + user.userDetails.lastName) :
+											  (user.userProfile.hideEmail !== false && !user.userToken ? '[Anonymous User]' : user.userDetails.email)}}
+										</h4>
+
+									</div>
+
+								</div>
+								<div class="profile-content load-in-anim backgroundColorTheme">
+
+									<div class="item location">
+										<h5 class="ellipsis">Location</h5>
+										<p class="ellipsis opacity-eighty">
+											{{user._userProfiles.location}}</p>
+									</div>
+									<div class="item bio padding-top-zero">
+										<h5 class="ellipsis">Bio</h5>
+										<p class="word-break">{{user._userProfiles.bio}}</p>
+									</div>
+									<div class="item">
+										<h5 data-translate="emailAddress" class="type">
+											email address</h5>
+
+										<p class="ellipsis text-primary"
+											ng-if="!(user.userProfile.hideEmail !== false && !user.userToken)">
+											<a class="text-primary"
+												ng-href="{{'mailto:'+(user.userProfile.email? user.userProfile.email : user.email)}}">{{user.userProfile.email
+											|| user.email}}</a>
+										</p>
+										<p class="ellipsis text-primary"
+											ng-if="user.userProfile.hideEmail !== false && !user.userToken">
+											<span class="text-primary">[hidden]</span>
+										</p>
+									</div>
+									<div class="item">
+										<h5 data-translate="phoneNumber" class="type">
+											phone number</h5>
+
+										<p class="ellipsis text-primary"><a class="text-primary"
+												ng-href="{{'tel:'+user._userProfiles.phone}}">
+												{{user._userProfiles.phone}}</a></p>
+									</div>
+									<div class="item">
+										<h5 data-translate="twitterHandle" class="type">
+											twitter handle</h5>
+
+										<p class="ellipsis text-primary">
+											<a class="text-primary">
+												{{user._userProfiles.twitterHandle?'@'+user._userProfiles.twitterHandle:''}}</a>
+										</p>
+									</div>
+									<div class="item">
+										<h5 data-translate="facebookUrl" class="type">
+											facebook url</h5>
+
+										<p class="ellipsis text-primary">
+											<a class="text-primary">
+												{{user._userProfiles.facebookHandle}}</a>
+										</p>
+									</div>
+									<div class="item">
+										<h5 data-translate="instagramHandle" class="type">instagram
+											handle</h5>
+
+										<p class="ellipsis text-primary">
+											<a class="text-primary">
+												{{user._userProfiles.instagramHandle?'@'+user._userProfiles.instagramHandle:''}}</a>
+										</p>
+									</div>
+									<div class="item">
+										<h5 data-translate="websiteUrl" class="type">
+											website url</h5>
+
+										<p class="ellipsis text-primary">
+											<a class="text-primary">
+												{{user._userProfiles.websiteURI}}
+											</a>
+										</p>
+									</div>
+
+									<!-- <div class="user-list-items padded padding-top-zero"
+										ng-if="showCustomUserProfile" ng-show="!editingProfile">
+										<div class="clearfix">
+											<div ng-if="!(user.userProfile.hideEmail !== false && !user.userToken)"
+												class="padding-left-zero margin-top-ten margin-bottom-twenty">
+												<h4 class="margin-top-five ellipsis">
+													<b>
+														{{ user.displayName || user.firstName || user.lastName? (user.displayName ?
+												user.displayName : user.firstName+' '+user.lastName) : user.email }}
+													</b>
+												</h4>
+											</div>
+											<div class="margin-bottom-twenty"
+												ng-repeat="field in customRegistrationFields | orderBy:'order'"
+												ng-if="(field.value || (field.values && field.values.length > 0)) && field.viewType !== 'none'">
+												<span ng-bind="field.label" class="caption"></span>
+												<p class="ellipsis text-primary"
+													ng-if="field.viewType === 'email' && !(user.userProfile.hideEmail !== false && !user.userToken)">
+													<a class="text-primary"
+														ng-href="{{'mailto:'+(field.value)}}"
+														ng-bind="field.value"></a>
+												</p>
+												<p class="ellipsis text-primary"
+													ng-if="field.viewType === 'email' && user.userProfile.hideEmail !== false && !user.userToken">
+													<span class="text-primary">[hidden]</span>
+												</p>
+												<p class="ellipsis"
+													ng-if="field.viewType === 'text'"
+													ng-bind="field.displayValue ? field.displayValue : field.value">
+												</p>
+												<p class="multi-line"
+													ng-if="field.viewType === 'multiline'"
+													ng-bind="field.displayValue ? field.displayValue : field.value">
+												</p>
+											</div>
+										</div>
+									</div> -->
+
+
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+				</td-card>
+			</td-cards>
+
+		</div>
+	</div>
+</div>
